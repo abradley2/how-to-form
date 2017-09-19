@@ -45,6 +45,11 @@ function oninit() {
 function form() {
 	const {form} = store.getState()
 
+	const formIsValid =
+		!validators.age(form.age) &&
+		!validators.thing(form.thing) &&
+		!validators.name(form.name)
+
 	return m('div.avenir', [
 		m('div.flex.flex-row-l.flex-column', [
 			m(textField, {
@@ -88,10 +93,18 @@ function form() {
 		]),
 		m(button, {
 			buttonType: 'primary',
+			disabled: form.submitted && !formIsValid,
 			onclick() {
+				// Just so we know a submit attempt has happened
 				store.dispatch({
 					type: 'FORM^SUBMIT_FORM'
 				})
+
+				if (formIsValid) {
+					// Dispatch some actions and then continue
+					window.console.log('YAY!')
+				}
+				// Otherwise the user needs to fill out the form and try again
 			}
 		}, 'Submit')
 	])
